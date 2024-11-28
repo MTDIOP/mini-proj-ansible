@@ -42,3 +42,18 @@
         volumes: 
           - "{{ webapp_directory }}:/usr/local/apache2/htdocs/index.html"
 
+# debug output
+- debug:
+    msg:
+      - "With specified variables, following configuration has been made:"
+      - ""
+      - "WEBAPP_NAME: {{ webapp_name }}"
+      - "WEBAPP_DIRECTORY: {{ webapp_directory }}"
+      - "WEBAPP_USER: {{ system_user }}"
+      - "WEBAPP_PORT: {{ webapp_port }}"
+
+- debug:
+    msg:
+      - "Setup successfully complete."
+      - ""
+      - "Webapp instance is available on following IP: {{ inventory_hostname }}"
