@@ -14,17 +14,14 @@
         - git
         - wget
 
-    - name: Install Python 3 and pip3
-      package:
-        name:
-          - python3
-          - python3-pip
-        state: present
+    - name: Download pip script
+      get_url:
+        url: https://bootstrap.pypa.io/pip/2.7/get-pip.py
+        dest: /tmp/get-pip.py
 
-    - name: Install Docker module for Python
-      pip:
-        name: docker
-        #executable: pip3
+    - name: Install python-pip
+      ansible.builtin.command: 
+        cmd: python2.7 /tmp/get-pip.py3
         
   tasks:
     - name: install docker-py library
@@ -42,5 +39,6 @@
         image: httpd
         ports:
           - "80:80"
-        #volumes: 
-         #- /home/admin/index.html:/usr/local/apache2/htdocs/index.html
+        volumes: 
+          - /home/admin/index.html:/usr/local/apache2/htdocs/index.html
+
