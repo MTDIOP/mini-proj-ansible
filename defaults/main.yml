@@ -1,0 +1,7 @@
+---
+# defaults file for webapp-docker
+
+system_user: admin
+webapp_name: webapp
+webapp_directory: /home/"{{ system_user }}"/index.html
+webapp_port: 80

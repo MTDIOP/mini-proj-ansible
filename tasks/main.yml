@@ -31,14 +31,14 @@
     - name: Copy website file template
       template:
         src: index.html.j2
-        dest: /home/admin/index.html
+        dest: "{{ webapp_directory }}"
         
     - name: Create Apache container
       docker_container:
-        name: webapp
+        name: "{{ webapp_name }}"
         image: httpd
         ports:
-          - "80:80"
+          - "{{ webapp_port }} : {{ webapp_port }}"
         volumes: 
-          - /home/admin/index.html:/usr/local/apache2/htdocs/index.html
+          - "{{ webapp_directory }}:/usr/local/apache2/htdocs/index.html"
 
