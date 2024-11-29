@@ -63,4 +63,4 @@
     msg:
       - "Setup successfully complete."
       - ""
-      - "Webapp instance is available on following IP: {{ inventory_hostname }}"
+      - "Webapp instance is available on following Name: {{ inventory_hostname }}"
