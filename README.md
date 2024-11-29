@@ -11,3 +11,15 @@ To use it you first have to deploy an ansible machine with a host.
 first install playbook from link given earlier : ansible-galaxy install -r roles/requirements.yml
 
 run with command : ansible-playbook -i hosts.yml --ask-vault-password webapp.yml
+
+Role Variables
+=========
+
+This role comes with following variables defined in defaults/main.yml:
+
+```
+system_user: admin
+webapp_name: webapp
+webapp_directory: /home/{{ system_user }}/index.html
+webapp_port: 80
+```
