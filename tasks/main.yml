@@ -1,58 +1,50 @@
 ---
-- name: "Apache installation using Docker on CentOS"
-  hosts: prod
-  become: true
-  vars:
-    ansible_python_interpreter: /usr/bin/python2.7
+- name: Install EPEL repo
+  package: name={{ item }} state=present
+  when: ansible_distribution == "CentOS"
+  loop:
+    - epel-release
+    - git
+    - wget
 
-  pre_tasks:
-    - name: Install EPEL repo
-      package: name={{ item }} state=present
-      when: ansible_distribution == "CentOS"
-      loop:
-        - epel-release
-        - git
-        - wget
+- name: Download pip script
+  get_url:
+    url: https://bootstrap.pypa.io/pip/2.7/get-pip.py
+    dest: /tmp/get-pip.py
 
-    - name: Download pip script
-      get_url:
-        url: https://bootstrap.pypa.io/pip/2.7/get-pip.py
-        dest: /tmp/get-pip.py
+- name: Install python-pip
+  ansible.builtin.command: 
+    cmd: python2.7 /tmp/get-pip.py
+    
+- name: install docker-py library
+  pip:
+    name: docker-py
 
-    - name: Install python-pip
-      ansible.builtin.command: 
-        cmd: python2.7 /tmp/get-pip.py
-        
-  tasks:
-    - name: install docker-py library
-      pip:
-        name: docker-py
+- name: Copy website file template
+  template:
+    src: index.html.j2
+    dest: "{{ webapp_directory }}"
+    
+- name: Create Apache container
+  docker_container:
+    name: "{{ webapp_name }}"
+    image: httpd
+    ports:
+      - "{{ webapp_port }} : {{ webapp_port }}"
+    volumes: 
+      - "{{ webapp_directory }}:/usr/local/apache2/htdocs/index.html"
 
-    - name: Copy website file template
-      template:
-        src: index.html.j2
-        dest: "{{ webapp_directory }}"
-        
-    - name: Create Apache container
-      docker_container:
-        name: "{{ webapp_name }}"
-        image: httpd
-        ports:
-          - "{{ webapp_port }} : {{ webapp_port }}"
-        volumes: 
-          - "{{ webapp_directory }}:/usr/local/apache2/htdocs/index.html"
+- name: Waiting for all containers to start up and {{ inventory_hostname }} to be accessible
+  wait_for:
+    host: "{{ inventory_hostname }}"
+    port: 80
+    timeout: 180
+  register: host_accessible
+  failed_when: False
 
-    - name: Waiting for all containers to start up and {{ inventory_hostname }} to be accessible
-      wait_for:
-        host: "{{ inventory_hostname }}"
-        port: 80
-        timeout: 180
-      register: host_accessible
-      failed_when: False
-
-    - debug:
-        msg: "Site is reachable"
-      when: host_accessible.state is defined and host_accessible.state == "started"
+- debug:
+    msg: "Site is reachable"
+  when: host_accessible.state is defined and host_accessible.state == "started"
 
 - debug:
     msg: "Site is NOT reachable"
