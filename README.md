@@ -23,3 +23,39 @@ webapp_name: webapp
 webapp_directory: /home/{{ system_user }}/index.html
 webapp_port: 80
 ```
+########### HOW TO USE THE ROLE ##############
+Create file ansible.cfg
+
+![alt text](images/image.png)
+
+Create group_vars/prod;yml for creadentials files
+
+![alt text](images/image-1.png)
+
+Create hosts.yml file
+
+![alt text](images/image-2.png)
+
+Create roles/requirement.yml to declare src file
+
+![alt text](images/image-3.png)
+
+Create webapp.yml file to use the role
+![alt text](images/image-4.png)
+
+Install the role
+
+ansible-galaxy install -r roles/requirements.yml
+
+![alt text](images/image-5.png)
+
+Deploy the webapp
+
+ansible-playbook -i hosts.yml --ask-vault-password webapp.yml
+![alt text](images/image-6.png)
+
+Application Access
+
+![alt text](images/image-7.png)
+
+![alt text](images/image-8.png)
